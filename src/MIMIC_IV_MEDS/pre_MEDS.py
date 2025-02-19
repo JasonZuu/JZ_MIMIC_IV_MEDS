@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 from functools import partial
 from pathlib import Path
+import shutil
 
 import polars as pl
 from MEDS_transforms.extract.utils import get_supported_fp
@@ -253,9 +254,9 @@ def main(input_dir: Path, output_dir: Path, do_overwrite: bool | None = None):
 
         if pfx not in FUNCTIONS and pfx not in [p for p, _ in ICD_DFS_TO_FIX]:
             logger.info(
-                f"No function needed for {pfx}: " f"Symlinking {str(fp.resolve())} to {str(out_fp.resolve())}"
+                f"No function needed for {pfx}: Copying {str(fp.resolve())} to {str(out_fp.resolve())}"
             )
-            out_fp.symlink_to(fp)
+            shutil.copy(fp, out_fp)
             continue
         elif pfx in FUNCTIONS:
             out_fp = output_dir / f"{pfx}.parquet"
