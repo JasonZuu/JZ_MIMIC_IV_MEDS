@@ -3,5 +3,5 @@ defaults:
   - _self_
 
 parallelize:
-  n_workers: ${oc.env:N_WORKERS,1}
+  n_workers: ${oc.env:N_WORKERS,2}
   launcher: "joblib"
