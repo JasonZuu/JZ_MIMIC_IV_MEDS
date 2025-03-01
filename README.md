@@ -57,3 +57,10 @@ data is 9.8 GB. This can be reduced significantly as well as intermediate files 
 MEDS dataset are retained in additional folders. See
 [this github issue](https://github.com/mmcdermott/MEDS_transforms/issues/235) for tracking on ensuring these
 directories are automatically cleaned up in the future.
+
+
+## Task label extractuion commands
+```bash
+aces-cli cohort_name="anemia" cohort_dir="/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds" data.standard=meds data=sharded data.root="/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" "data.shard=$(expand_shards train/300 tuning/100 held_out/100)" -m
+
+```

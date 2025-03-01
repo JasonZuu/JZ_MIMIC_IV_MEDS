@@ -104,10 +104,14 @@ hosp/labevents:
 
 hosp/omr:
   omr:
-    code: col(result_name)
+    code: 
+      - OMR
+      - col(result_name)
     text_value: col(result_value)
     time: col(chartdate)
     time_format: "%Y-%m-%d"
+    
+
 
 hosp/patients:
   gender:
@@ -199,7 +203,7 @@ icu/icustays:
 icu/chartevents:
   event:
     code:
-      - VITAL
+      - VITALS
       - col(itemid)
       - col(valueuom)
     time: col(charttime)
