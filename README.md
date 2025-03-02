@@ -1,14 +1,4 @@
-# MIMIC-IV MEDS Extraction ETL
-
-[![PyPI - Version](https://img.shields.io/pypi/v/MIMIC-IV-MEDS)](https://pypi.org/project/MIMIC-IV-MEDS/)
-[![Documentation Status](https://readthedocs.org/projects/meds-transforms/badge/?version=latest)](https://meds-transforms.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/mmcdermott/MIMIC_IV_MEDS/graph/badge.svg?token=E7H6HKZV3O)](https://codecov.io/gh/mmcdermott/MIMIC_IV_MEDS)
-[![tests](https://github.com/mmcdermott/MIMIC_IV_MEDS/actions/workflows/tests.yaml/badge.svg)](https://github.com/mmcdermott/MIMIC_IV_MEDS/actions/workflows/tests.yml)
-[![code-quality](https://github.com/mmcdermott/MIMIC_IV_MEDS/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/mmcdermott/MIMIC_IV_MEDS/actions/workflows/code-quality-main.yaml)
-![python](https://img.shields.io/badge/-Python_3.11-blue?logo=python&logoColor=white)
-[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/mmcdermott/MIMIC_IV_MEDS#license)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/mmcdermott/MIMIC_IV_MEDS/pulls)
-[![contributors](https://img.shields.io/github/contributors/mmcdermott/MIMIC_IV_MEDS.svg)](https://github.com/mmcdermott/MIMIC_IV_MEDS/graphs/contributors)
+# MIMIC-IV MEDS Extraction, Tabularisation, and Development
 
 This pipeline extracts the MIMIC-IV dataset (from physionet) into the MEDS format.
 
@@ -63,4 +53,69 @@ directories are automatically cleaned up in the future.
 ```bash
 aces-cli cohort_name="anemia" cohort_dir="/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds" data.standard=meds data=sharded data.root="/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" "data.shard=$(expand_shards train/300 tuning/100 held_out/100)" -m
 
+```
+
+## MEDS-tab (For XGBoost baseline)
+1. Account codes
+```bash
+meds-tab-describe \
+    "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
+    "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular"
+```
+
+2. Tabularize static
+```bash
+meds-tab-tabularize-static \
+    "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
+    "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular" \
+    tabularization.min_code_inclusion_count=10 \
+    tabularization.window_sizes=[1d] \
+    do_overwrite=False \
+    tabularization.aggs=[static/present,code/count,value/count,value/sum,value/sum_sqd,value/min,value/max]
+```
+
+3. Tabularise time-series
+```bash
+meds-tab-tabularize-time-series \
+    --multirun \
+    worker="range(0,8)" \
+    hydra/launcher=joblib \
+    "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
+    "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular" \
+    tabularization.min_code_inclusion_count=10 \
+    tabularization.window_sizes=[1d] \
+    tabularization.aggs=[static/present,code/count,value/count,value/sum,value/sum_sqd,value/min,value/max]
+```
+
+
+4. Align tasks
+```bash
+export TASK="anemia"
+
+meds-tab-cache-task \
+    --multirun \
+    hydra/launcher=joblib \
+    worker="range(0,10)" \
+    "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
+    "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular" \
+    "input_label_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tasks/$TASK" \
+    "task_name=$TASK" \
+    tabularization.min_code_inclusion_count=10 \
+    tabularization.window_sizes=[1d] \
+    tabularization.aggs=[static/present,code/count,value/count,value/sum,value/sum_sqd,value/min,value/max]
+```
+
+5. Run the XGBoost
+```bash
+export TASK="short_los"
+
+meds-tab-model \
+    model_launcher=xgboost \
+    "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
+    "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular" \
+    "output_model_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/baselines/$TASK/" \
+    "task_name=$TASK" \
+    tabularization.min_code_inclusion_count=10 \
+    tabularization.window_sizes=[1d] \
+    tabularization.aggs=[static/present,code/count,value/count,value/sum,value/sum_sqd,value/min,value/max]
 ```
