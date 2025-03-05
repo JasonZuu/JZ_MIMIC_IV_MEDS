@@ -115,10 +115,13 @@ hosp/omr:
 
 hosp/patients:
   gender:
-    code:
-      - GENDER
-      - col(gender)
+    code: GENDER
     time: null
+    text_value: col(gender)
+  age:
+    code: AGE
+    time: null
+    numeric_value: col(anchor_age)
   dob:
     code: MEDS_BIRTH # This is the MEDS official code for birth.
     time: col(year_of_birth)

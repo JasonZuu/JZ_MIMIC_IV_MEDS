@@ -8,7 +8,7 @@ This pipeline extracts the MIMIC-IV dataset (from physionet) into the MEDS forma
 pip install MIMIC_IV_MEDS
 export DATASET_DOWNLOAD_USERNAME=$PHYSIONET_USERNAME
 export DATASET_DOWNLOAD_PASSWORD=$PHYSIONET_PASSWORD
-MEDS_extract-MIMIC_IV root_output_dir=$ROOT_OUTPUT_DIR
+MEDS_extract-MIMIC_IV root_output_dir=/home/exet6188/Data/mimiciv_meds do_download=false
 ```
 
 When you run this, the program will:
@@ -107,15 +107,16 @@ meds-tab-cache-task \
 
 5. Run the XGBoost
 ```bash
-export TASK="short_los"
+export TASK="anemia"
+export MODEL="logistic_regression"
 
 meds-tab-model \
-    model_launcher=xgboost \
+    model_launcher=logistic_regression \
     "input_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/MEDS_cohort/data" \
     "output_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/tabular" \
     "output_model_dir=/home/exet6188/Code/JZ_MIMIC_IV_MEDS/data/mimiciv_meds/baselines/$TASK/" \
     "task_name=$TASK" \
     tabularization.min_code_inclusion_count=10 \
     tabularization.window_sizes=[1d] \
-    tabularization.aggs=[static/present,code/count,value/count,value/sum,value/sum_sqd,value/min,value/max]
+    tabularization.aggs=[static/present,code/count,value/count,value/min,value/max]
 ```
