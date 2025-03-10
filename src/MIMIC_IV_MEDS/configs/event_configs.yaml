@@ -115,13 +115,10 @@ hosp/omr:
 
 hosp/patients:
   gender:
-    code: GENDER
+    code: 
+      - GENDER
+      - col(gender)
     time: null
-    text_value: col(gender)
-  age:
-    code: AGE
-    time: null
-    numeric_value: col(anchor_age)
   dob:
     code: MEDS_BIRTH # This is the MEDS official code for birth.
     time: col(year_of_birth)
@@ -216,17 +213,16 @@ icu/chartevents:
     hadm_id: hadm_id
     icustay_id: stay_id
     _metadata:
-      # TODO: make this work even with missing valueuom
-      #meas_chartevents_main:
-      #  description: ["omop_concept_name", "label"] # List of strings are columns to be collated
-      #  itemid: "itemid (omop_source_code)"
-      #  parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"
-      # TODO: I don't know if this is necessary...
-      d_labitems_to_loinc:
+      meas_chartevents:
         description: ["omop_concept_name", "label"] # List of strings are columns to be collated
         itemid: "itemid (omop_source_code)"
         parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"
         valueuom: "valueuom"
+      # d_labitems_to_loinc:
+      #   description: ["omop_concept_name", "label"] # List of strings are columns to be collated
+      #   itemid: "itemid (omop_source_code)"
+      #   parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"
+      #   valueuom: "valueuom"
 
 icu/procedureevents:
   start:
