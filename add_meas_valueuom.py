@@ -5,6 +5,7 @@ df1 = pd.read_csv("data/mimiciv_meds/raw_input/meas_chartevents_main.csv")  # Re
 
 # Read the second CSV file
 df2 = pd.read_csv("data/mimiciv_meds/raw_input/icu_d_items.csv")  # Replace with the path to your second CSV file
+df2 = df2[["itemid", "unitname"]]  # Keep only the itemid and unitname columns
 
 # Merge the two DataFrames based on the itemid column, using df1 as the base
 merged_df = pd.merge(
@@ -17,6 +18,7 @@ merged_df = pd.merge(
 
 # Rename the unitname column to valueuom
 merged_df.rename(columns={"unitname": "valueuom"}, inplace=True)
+merged_df.drop(columns=["itemid"], inplace=True)  # Drop the itemid column
 
 # If the comment column exists, translate its content to English
 if "comment" in merged_df.columns:
