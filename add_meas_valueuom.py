@@ -5,7 +5,7 @@ df1 = pd.read_csv("data/mimiciv_meds/raw_input/meas_chartevents_main.csv")  # Re
 
 # Read the second CSV file
 df2 = pd.read_csv("data/mimiciv_meds/raw_input/icu_d_items.csv")  # Replace with the path to your second CSV file
-df2 = df2[df2["param_type"]=="Numeric"][["itemid", "label", "unitname"]]  # Keep only the itemid and unitname columns
+df2 = df2[["itemid", "label", "unitname"]]  # Keep only the itemid and unitname columns
 
 # Step 1: Perform a left merge
 merged_df = pd.merge(
