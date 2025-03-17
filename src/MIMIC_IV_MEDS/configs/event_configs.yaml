@@ -27,6 +27,27 @@ hosp/admissions:
     time: col(dischtime)
     time_format: "%Y-%m-%d %H:%M:%S"
     hadm_id: hadm_id
+  language:
+    code: 
+      - LANGUAGE
+      - col(language)
+    time: col(admittime)
+    time_format: "%Y-%m-%d %H:%M:%S"
+    hadm_id: hadm_id
+  marital_status:
+    code: 
+      - MARITAL_STATUS
+      - col(marital_status)
+    time: col(admittime)
+    time_format: "%Y-%m-%d %H:%M:%S"
+    hadm_id: hadm_id
+  race:
+    code:
+      - RACE
+      - col(race)
+    time: col(admittime)
+    time_format: "%Y-%m-%d %H:%M:%S"
+    hadm_id: hadm_id
   # We omit the death event here as it is joined to the data in the subjects table in the pre-MEDS step.
 
 hosp/diagnoses_icd:
@@ -118,6 +139,11 @@ hosp/patients:
     code: 
       - GENDER
       - col(gender)
+    time: null
+  age:
+    code: 
+      - AGE
+      - col(anchor_age)
     time: null
   dob:
     code: MEDS_BIRTH # This is the MEDS official code for birth.
