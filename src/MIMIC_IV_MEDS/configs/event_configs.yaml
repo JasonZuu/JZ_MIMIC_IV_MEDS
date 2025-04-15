@@ -244,12 +244,11 @@ icu/chartevents:
         itemid: "itemid (omop_source_code)"
         parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"
         valueuom: "valueuom"
-      # d_labitems_to_loinc:
-      #   description: ["omop_concept_name", "label"] # List of strings are columns to be collated
-      #   itemid: "itemid (omop_source_code)"
-      #   parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"
-      #   valueuom: "valueuom"
-
+      # icu_d_items:
+      #   description: ["label"] # List of strings are columns to be collated
+      #   itemid: "itemid"
+      #   valueuom: "unitname"
+      
 icu/procedureevents:
   start:
     code:
@@ -339,15 +338,13 @@ icu/outputevents:
     code:
       - SUBJECT_FLUID_OUTPUT
       - col(itemid)
-      - col(valueuom)
     time: col(charttime)
     time_format: "%Y-%m-%d %H:%M:%S"
     hadm_id: hadm_id
     icustay_id: stay_id
     numeric_value: value
     _metadata:
-      outputevents_to_loinc:
-        description: ["omop_concept_name", "label"] # List of strings are columns to be collated
-        itemid: "itemid (omop_source_code)"
+      icu_d_items:
+        description: "label" # List of strings are columns to be collated
+        itemid: "itemid"
         valueuom: "unitname"
-        parent_codes: "{omop_vocabulary_id}/{omop_concept_code}"

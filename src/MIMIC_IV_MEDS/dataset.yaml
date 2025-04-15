@@ -18,6 +18,7 @@ urls:
     - ${metadata_url_base}/lab_itemid_to_loinc.csv
     - ${metadata_url_base}/meas_chartevents_main.csv
     - ${metadata_url_base}/meas_chartevents_value.csv
+    - ${metadata_url_base}/meas_chartevents.csv
     - ${metadata_url_base}/numerics-summary.csv
     - ${metadata_url_base}/outputevents_to_loinc.csv
     - ${metadata_url_base}/proc_datetimeevents.csv
